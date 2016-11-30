@@ -1,5 +1,6 @@
 package com.example.ipsenspiegel.mymultimediamanager;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,14 +57,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         } else if (whichView.getId() == R.id.btnPlaySoundInService) {
+            Intent serviceIntent = new Intent(this, MyIntentService.class);
+            this.startService(serviceIntent);
+
         }
     }
 
-    
     @Override
-    public void onPrepared(MediaPlayer mp) {
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        if (this.isFinishing())
+        {
+            this.mPlayer.stop();
+            // Releasing the 'MediaPlayer'
+            this.mPlayer.release();
+            this.mPlayer = null;
+        }
+
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp)
+    {
         mp.start();
     }
 }
-
-
